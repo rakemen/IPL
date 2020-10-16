@@ -18,7 +18,7 @@ How do i simulate the 2^n scenarios?
 
 The script takes about ~15 minutes to estimate outcomes for 24 games (16.7 million scenarios). Can it be made more efficient? Definitely yes! I will post an algorithm shared by another reddit user which is more compact and uses recursion, but might be slightly complicated to understand/debug for someone who is not very familiar with recursions.
 
-I prefer the current algorithm as I have tested it for accuracy and its easier to understand and debug for beginner level programmers. Also, the time taken to run the script reduces by 50% with every passing game.
+I prefer the current algorithm as I have tested it for accuracy and its easier to understand and debug for beginner level programmers. Also, the time taken to run the script reduces by 50% with every passing game and therefore once you get to 25 games or less, performance is not a major concern.
 
 
 
