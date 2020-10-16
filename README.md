@@ -12,8 +12,8 @@ From this final picture, it can be determined if a team makes it to top 2 confir
 Given the 2^n scenarios, if a team makes it to top 2 confirmed spot in say x scenarios, x/(2^n) is the probability of that team making it to top 2 confirmed spot.
 
 How do i simulate the 2^n scenarios?
-- run a loop from 0 to 2^n-1
-- convert the number to a binary string
+- run a loop from 0 to (2^n)-1
+- convert the number to a binary string - this binary sequence will represent a unique sequence of events (eg: 3 games left -> 0 to 7 -> 000, 001, 010, 011, 100, 101, 110, 111 represent the 8 possible scenarios of results, with each digit of the binary number representing the outcome of a single game)
 - if a digit is 0, assume team-1 won that game and if the digit is 1, assume team-2 won and allocate points accordingly
 
 The script takes about ~15 minutes to estimate outcomes for 24 games (16.7 million scenarios). Can it be made more efficient? Definitely yes! I will post an algorithm shared by another reddit user which is more compact and uses recursion, but might be slightly complicated to understand/debug for someone who is not very familiar with recursions.
