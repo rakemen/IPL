@@ -1,10 +1,65 @@
-from datetime import datetime
+import datetime
+import time
+import sys
 
 # Base points is the picture of current points table. This will be used as starting point for each simulation
-basePoints = { "csk":14, "srh":18, "kxip":12, "kkr":12, "mi":10, "rcb":8, "dd":6, "rr":10 }
+basePoints = { "mi":10, "dc":12, "kkr":8, "rcb":10, "srh":6, "rr":6, "csk":6, "kxip":4 }
 
-# list of pending matches
-matches = [ "csk:kxip", "dd:mi", "srh:kkr", "rr:rcb", "dd:csk", "rcb:srh", "mi:kxip", "kkr:rr", "kxip:rcb", "mi:rr", "csk:srh"]
+# list of pending matches - manually edit this after each game
+matches = [  
+"mi:kkr",
+"rr:rcb",
+"dc:csk",
+"srh:kkr",
+"mi:kxip",
+"csk:rr",
+"kxip:dc",
+"kkr:rcb",
+"rr:srh",
+"csk:mi",
+"kkr:dc",
+"kxip:srh",
+"rcb:csk",
+"rr:mi",
+"kkr:kxip",
+"srh:dc",
+"mi:rcb",
+"csk:kkr",
+"kxip:rr",
+"dc:mi",
+"rcb:srh",
+"csk:kxip",
+"kkr:rr",
+"dc:rcb",
+"srh:mi"
+]
+
+#function to chop microseconds from timestamp
+def chop_microseconds(delta):
+    return delta - datetime.timedelta(microseconds=delta.microseconds)
+
+#if no argument is passed to the script it calculates probability based on current table
+#you can pass one of the  team names of the next game and the script will calculate probabilities assuming that team wins
+
+if len(sys.argv) > 1:
+	winner = sys.argv[1]
+	nextMatch=matches[0] 
+	simulation_condition = winner + " is winner"
+	print("running simulations assuming %s wins in %s" % (winner, nextMatch))
+	
+	#input team name passed should be playing the next game. Otherwise, throw an error and exit
+	if not winner in nextMatch:
+		print("%s is not a valid winner for the game %s\n" % (winner, nextMatch))
+		exit(1)
+
+	#increment points of the team passed as winner to the script and reduce number of games by 1
+	print("incrementing base points of %s by 2 and reducing matches from %d to %d" % (winner, len(matches), len(matches)-1))
+	basePoints[winner] += 2
+	matches=matches[1:]
+else:
+	simulation_condition = "before game"
+	print("running simulations before game %s" % matches[0])
+
 
 # get list of teams in sorted order
 teams = sorted( basePoints.keys() )
@@ -21,6 +76,8 @@ top2Possible  = {}
 top4Confirmed = {}
 top4Possible  = {}
 binaryStr     = ""
+print_every = 500000 #prints a log message for every n simulations
+start_time = time.time()
 
 # initialize probability to 0 for all teams
 for team in teams:
@@ -32,10 +89,12 @@ for team in teams:
 # run simulations
 for i in range(0,combos):
 
-	#print progress of script for every 1000 simulations
-	if i%1000 == 0:
-		t=str(datetime.now())
-		print( "{}: completed {:0,d} simulations".format(t,i))
+	#print progress of script for 'print_every' simulations
+	if (i+1)%print_every == 0:
+		elapsed_time = str(chop_microseconds(datetime.timedelta(seconds=time.time()-start_time)))
+		eta = str(chop_microseconds(datetime.timedelta(seconds=(time.time()-start_time)* (combos-i+1)/(i+1))))
+		#eta to complete script is calculated by estimating how long it took for the # of simulations calculated until now and extrapolate to remaining scenarios to compute
+		print("Completed %s of %s sims (%10.10f percent ) elapsed %s should complete in %s" % ("{:,}".format(i+1), "{:,}".format(combos), (i+1)*100/combos, elapsed_time, eta) )
 
 	binaryStr = format(i, formatStr)
 	simPoints = basePoints.copy()
@@ -48,12 +107,11 @@ for i in range(0,combos):
 	for seq in binaryStr:
 		team1, team2 = matches[matchCnt].split(":")
 		if seq == "0":
-			winner=team1
+			simPoints[ team1 ] = simPoints[ team1 ] + 2
 		else:
-			winner=team2
+			simPoints[ team2 ] = simPoints[ team2 ] + 2
 
 		# increment points of winning team by 2
-		simPoints[ winner ] = simPoints[ winner ] + 2
 		matchCnt = matchCnt + 1
 
 	# at the end of a sequence, determine positions for each team
@@ -90,6 +148,7 @@ for i in range(0,combos):
 print
 print( "Results:" )
 print
+print("==========" + simulation_condition + "==============")
 print( "-------------------------------------- Possible Scenarios -------------------")
 print( "%5s|%17s|%17s|%17s|%17s|" % ("Team", "Top 2 Confirmed", "Top 2 Possible", "Top 4 Confirmed", "Top 4 Possible") )
 print( "-----------------------------------------------------------------------------")
@@ -105,5 +164,4 @@ print( "%5s|%17s|%17s|%17s|%17s|" % ("Team", "Top 2 Confirmed", "Top 2 Possible"
 print( "------------------------------------------------------------------------------")
 for team in teams:
 	print( "%5s|%15.2f %%|%15.2f %%|%15.2f %%|%15.2f %%|" % (team, top2Confirmed[team] * 100.0/combos, top2Possible[team] * 100.0/combos, top4Confirmed[team] * 100.0/combos, top4Possible[team] * 100.0/combos) )
-
 
