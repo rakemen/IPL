@@ -1,26 +1,29 @@
 # IPL
 IPL playoff simulator
 
-The repository has 3 files:
+This is a python based playoff probability simulator. Tested with python 3.8.5 on windows 10 64-bit OS.
 
-1. ipl.py - This is a python based playoff probability simulator. Tested with python 2.7 on windows 64 bit computer
-2. ipl.xlsm - This is an excel based macro which does the same as the python script.
-3. ipl playoff probability deltas.xls - This excel needs to be manually populated and shows the jump/drop in probability before and after a game
+Overview of algorithm:
 
-Difference between the python and excel version:
+Assuming no ties/washout/no result, each game has two possible outcomes. 
+If n games remain in the tournament, there are a total of 2^n possible scenarios.
+For each of these scenarios, compute how the final points table will look and from that, one can figure out which teams make it to top 2 spots and which teams makes it to top 4. In the event of multiple teams finishing with same points, NRR comes into play. 
+From this final picture, it can be determined if a team makes it to top 2 confirmed on points alone, top 2 competing on NRR, top 4 confirmed spot and top 4 competing on NRR. 
+Given the 2^n scenarios, if a team makes it to top 2 confirmed spot in say x scenarios, x/(2^n) is the probability of that team making it to top 2 confirmed spot.
 
-- The python version is scalable and can be run when a lot of games are left in the tournament. 
-- I have tested the python version when 24 games were left which results in about 16 million combinations. Excel cannot handle this.
-- Excel is more suited when the number of games left is 14 or less, ie, 8K+ combinations.
-- Why excel then?
-  - I wrote the excel macro 4 years ago when I didn't know python
-  - The excel can allow you to filter the probabilities and actually look at the sequence of combinations
-  
- 
-How to read the deltas excel:
+How do i simulate the 2^n scenarios?
+- run a loop from 0 to 2^n-1
+- convert the number to a binary string
+- if a digit is 0, assume team-1 won that game and if the digit is 1, assume team-2 won and allocate points accordingly
 
-- Rows 18-26 show the number of possible scenarios for each bucket
-- Rows 3-10 converts this number to % by dividing the number of scenarios / total possible scenarios
-- I populate rows 18-26 manually by running the python script for before the game scenario. I then remove the next game from pending matches list and then manually increment points for each team to calculate the probability in either case.
-- The deltas show the jump/drop in probability for either scenario. This is useful if you are watching a game where your team is not playing and you aren't sure whom to support. Choose the team which increases your team's net possibilities
-- Impact of a game is calculated by the absolute sum of deltas for Top 2 and Top 4 scenarios. Higher the number, higher the impact of the game's result on the team's probabilities
+The script takes about ~15 minutes to estimate outcomes for 24 games (16.7 million scenarios). Can it be made more efficient? Definitely yes! I will post an algorithm shared by another reddit user which is more compact and uses recursion, but might be slightly complicated to understand/debug for someone who is not very familiar with recursions.
+
+I prefer the current algorithm as I have tested it for accuracy and its easier to understand and debug for beginner level programmers. Also, the time taken to run the script reduces by 50% with every passing game.
+
+
+
+
+
+
+
+
