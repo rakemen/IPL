@@ -3,13 +3,11 @@ import time
 import sys
 
 # Base points is the picture of current points table. This will be used as starting point for each simulation
-basePoints = { "mi":10, "dc":12, "kkr":8, "rcb":10, "srh":6, "rr":6, "csk":6, "kxip":4 }
+# Update this after completion each game
+basePoints = { "mi":12, "dc":14, "kkr":8, "rcb":12, "srh":6, "rr":6, "csk":6, "kxip":4 }
 
 # list of pending matches - manually edit this after each game
 matches = [  
-"mi:kkr",
-"rr:rcb",
-"dc:csk",
 "srh:kkr",
 "mi:kxip",
 "csk:rr",
@@ -34,7 +32,7 @@ matches = [
 "srh:mi"
 ]
 
-#function to chop microseconds from timestamp
+#function to chop microseconds from timestamp - makes for better display
 def chop_microseconds(delta):
     return delta - datetime.timedelta(microseconds=delta.microseconds)
 
@@ -55,7 +53,7 @@ if len(sys.argv) > 1:
 	#increment points of the team passed as winner to the script and reduce number of games by 1
 	print("incrementing base points of %s by 2 and reducing matches from %d to %d" % (winner, len(matches), len(matches)-1))
 	basePoints[winner] += 2
-	matches=matches[1:]
+	matches=matches[1:] #since we have assumed one team to be the winner of the next game, remove next game from the schedule
 else:
 	simulation_condition = "before game"
 	print("running simulations before game %s" % matches[0])
