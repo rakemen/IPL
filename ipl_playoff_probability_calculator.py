@@ -4,32 +4,18 @@ import sys
 
 # Base points is the picture of current points table. This will be used as starting point for each simulation
 # Update this after completion each game
-basePoints = { "mi":12, "dc":14, "kkr":8, "rcb":12, "srh":6, "rr":6, "csk":6, "kxip":4 }
+basePoints = { "loud":7, "c9":6, "levi":4, "nrg":4, "furia":4, "100t":4, "eg":4, "sen":2, "mibr":2, "kru":0 }
 
 # list of pending matches - manually edit this after each game
 matches = [  
-"srh:kkr",
-"mi:kxip",
-"csk:rr",
-"kxip:dc",
-"kkr:rcb",
-"rr:srh",
-"csk:mi",
-"kkr:dc",
-"kxip:srh",
-"rcb:csk",
-"rr:mi",
-"kkr:kxip",
-"srh:dc",
-"mi:rcb",
-"csk:kkr",
-"kxip:rr",
-"dc:mi",
-"rcb:srh",
-"csk:kxip",
-"kkr:rr",
-"dc:rcb",
-"srh:mi"
+#"eg:mibr",
+"kru:sen",
+"nrg:loud",
+"levi:c9",
+"nrg:eg",
+"c9:kru",
+"levi:loud",
+"mibr:100t"
 ]
 
 #function to chop microseconds from timestamp - makes for better display
@@ -133,9 +119,9 @@ for i in range(0,combos):
 		# if at least 4 teams are below a team, the team is guaranteed a top 4 finish irrespective of NRR { indicated by T4C - Top 4 Confirmed }		
 		if teamsAhead <= 1:
 			top2Possible[team]=top2Possible[team]+1
-		if teamsBehind >= 6:
+		if teamsBehind >= 8:
 			top2Confirmed[team]=top2Confirmed[team]+1	
-		if teamsAhead <= 3:
+		if teamsAhead <= 5:
 			top4Possible[team]=top4Possible[team]+1
 		if teamsBehind >= 4:
 			top4Confirmed[team]=top4Confirmed[team]+1	
@@ -148,7 +134,7 @@ print( "Results:" )
 print
 print("==========" + simulation_condition + "==============")
 print( "-------------------------------------- Possible Scenarios -------------------")
-print( "%5s|%17s|%17s|%17s|%17s|" % ("Team", "Top 2 Confirmed", "Top 2 Possible", "Top 4 Confirmed", "Top 4 Possible") )
+print( "%5s|%17s|%17s|%17s|%17s|" % ("Team", "Top 2 Confirmed", "Top 2 Possible", "Top 6 Confirmed", "Top 6 Possible") )
 print( "-----------------------------------------------------------------------------")
 for team in teams:
 	print( "%5s|%17d|%17d|%17d|%17d|" % (team, top2Confirmed[team], top2Possible[team], top4Confirmed[team], top4Possible[team]) )
@@ -158,7 +144,7 @@ for team in teams:
 
 print
 print( "-------------------------------------- Possible Scenarios % ------------------")
-print( "%5s|%17s|%17s|%17s|%17s|" % ("Team", "Top 2 Confirmed", "Top 2 Possible", "Top 4 Confirmed", "Top 4 Possible") )
+print( "%5s|%17s|%17s|%17s|%17s|" % ("Team", "Top 2 Confirmed", "Top 2 Possible", "Top 6 Confirmed", "Top 6 Possible") )
 print( "------------------------------------------------------------------------------")
 for team in teams:
 	print( "%5s|%15.2f %%|%15.2f %%|%15.2f %%|%15.2f %%|" % (team, top2Confirmed[team] * 100.0/combos, top2Possible[team] * 100.0/combos, top4Confirmed[team] * 100.0/combos, top4Possible[team] * 100.0/combos) )
